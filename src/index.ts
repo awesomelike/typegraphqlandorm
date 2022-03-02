@@ -1,21 +1,22 @@
+import 'reflect-metadata';
 import { ApolloServer } from 'apollo-server-express';
 import { ApolloServerPluginDrainHttpServer } from 'apollo-server-core';
 import express from 'express';
 import http from 'http';
+import { buildSchema } from 'type-graphql';
 
-import typedefs from './typedefs';
-import resolvers from './resolvers';
+import { ProductResolver } from './resolvers';
 import { products } from './data';
 
 const port = 3000;
 
-async function start(typeDefs: any, resolvers: any) {
+async function start(resolvers: any) {
   const app = express();
   const httpServer = http.createServer(app);
+  const schema = await buildSchema({ resolvers });
   const apolloServer = new ApolloServer({
-    typeDefs,
-    resolvers,
-    context: { db: products },
+    schema,
+    context: { db: { products } },
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
   await apolloServer.start();
@@ -26,4 +27,4 @@ async function start(typeDefs: any, resolvers: any) {
   );
 }
 
-start(typedefs, resolvers);
+start([ProductResolver]);

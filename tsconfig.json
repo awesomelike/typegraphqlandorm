@@ -13,10 +13,11 @@
     "incremental": true,
     "strict": true,
     "skipLibCheck": true,
+    "strictPropertyInitialization": false,
     "strictNullChecks": true,
     "noImplicitAny": false,
     "strictBindCallApply": true,
-    "forceConsistentCasingInFileNames": false,
+    "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": false,
     "esModuleInterop": true
   }
