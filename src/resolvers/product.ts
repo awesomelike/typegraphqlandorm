@@ -1,9 +1,17 @@
 import { Context } from 'apollo-server-core';
-import { Arg, Ctx, Query, Resolver, Mutation } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  Query,
+  Resolver,
+  Mutation,
+  FieldResolver,
+  Root,
+} from 'type-graphql';
 import { Product, CreateProductInput } from '../entities';
 import { IContext } from '../types';
 
-@Resolver()
+@Resolver(() => Product)
 export class ProductResolver {
   @Query(() => [Product])
   products(@Ctx() ctx: Context<IContext>) {
@@ -13,6 +21,13 @@ export class ProductResolver {
   @Query(() => Product, { nullable: true })
   product(@Arg('id') id: string, @Ctx() ctx: Context<IContext>) {
     return ctx.db.products.find((product) => product.id === id);
+  }
+
+  @FieldResolver()
+  category(@Root() product: Product, @Ctx() ctx: Context<IContext>) {
+    return ctx.db.categories.find(
+      (category) => category.id === product.category
+    );
   }
 
   @Mutation(() => Product)

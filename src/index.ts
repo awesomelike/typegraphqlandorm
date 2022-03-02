@@ -5,18 +5,18 @@ import express from 'express';
 import http from 'http';
 import { buildSchema } from 'type-graphql';
 
-import { ProductResolver } from './resolvers';
-import { products } from './data';
+import { ProductResolver, CategoryResolver, SearchResolver } from './resolvers';
+import * as db from './data';
 
 const port = 3000;
 
 async function start(resolvers: any) {
   const app = express();
   const httpServer = http.createServer(app);
-  const schema = await buildSchema({ resolvers });
+  const schema = await buildSchema({ resolvers, emitSchemaFile: true });
   const apolloServer = new ApolloServer({
     schema,
-    context: { db: { products } },
+    context: { db },
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
   await apolloServer.start();
@@ -27,4 +27,4 @@ async function start(resolvers: any) {
   );
 }
 
-start([ProductResolver]);
+start([ProductResolver, CategoryResolver, SearchResolver]);

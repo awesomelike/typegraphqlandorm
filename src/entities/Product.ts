@@ -1,4 +1,5 @@
 import { ObjectType, InputType, Field, ID, Float } from 'type-graphql';
+import { Category } from './Category';
 
 @ObjectType()
 export class Product {
@@ -13,6 +14,9 @@ export class Product {
 
   @Field(() => Float)
   price: number;
+
+  @Field(() => Category, { nullable: true })
+  category: string;
 }
 
 @InputType()
@@ -25,4 +29,7 @@ export class CreateProductInput {
 
   @Field(() => Float)
   price: number;
+
+  @Field()
+  category: string;
 }
