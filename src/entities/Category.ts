@@ -1,10 +1,16 @@
-import { Field, ID, ObjectType } from 'type-graphql';
+import { Field, ID, InputType, ObjectType } from 'type-graphql';
 
 @ObjectType()
 export class Category {
   @Field(() => ID)
-  id: string;
+  id: number;
 
+  @Field()
+  name: string;
+}
+
+@InputType()
+export class CreateCategoryInput {
   @Field()
   name: string;
 }

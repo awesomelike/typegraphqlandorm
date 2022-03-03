@@ -7,6 +7,8 @@ import { buildSchema } from 'type-graphql';
 
 import { ProductResolver, CategoryResolver, SearchResolver } from './resolvers';
 import * as db from './data';
+import pool from './db/config';
+import { IContext } from './types';
 
 const port = 3000;
 
@@ -14,9 +16,11 @@ async function start(resolvers: any) {
   const app = express();
   const httpServer = http.createServer(app);
   const schema = await buildSchema({ resolvers, emitSchemaFile: true });
+  const dbClient = await pool.connect();
+  const context: IContext = { db, dbClient };
   const apolloServer = new ApolloServer({
     schema,
-    context: { db },
+    context,
     plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
   });
   await apolloServer.start();

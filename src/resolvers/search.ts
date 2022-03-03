@@ -6,20 +6,24 @@ import { IContext } from '../types';
 @Resolver()
 export class SearchResolver {
   @Query(() => [SearchResult])
-  search(
+  async search(
     @Arg('string') string: string,
     @Ctx() ctx: Context<IContext>
   ): Promise<Array<typeof SearchResult>> {
-    const lower = string.toLowerCase();
-    return Promise.resolve([
-      ...ctx.db.products.filter(
-        ({ title, description }) =>
-          title?.toLowerCase().includes(lower) ||
-          description?.toLowerCase().includes(lower)
-      ),
-      ...ctx.db.categories.filter(({ name }) =>
-        name?.toLowerCase().includes(lower)
-      ),
-    ]);
+    const lower = `%${string.toLowerCase()}%`;
+    const productsResult = await ctx.dbClient.query(
+      `SELECT * FROM products WHERE title ILIKE $1 OR description ILIKE $1`,
+      [lower]
+    );
+
+    const categoriesResult = await ctx.dbClient.query(
+      `SELECT * FROM categories WHERE name ILIKE $1`,
+      [lower]
+    );
+
+    const products = productsResult?.rows || [];
+    const categories = categoriesResult?.rows || [];
+
+    return [...products, ...categories];
   }
 }

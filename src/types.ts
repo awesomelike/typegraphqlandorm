@@ -1,3 +1,4 @@
+import { PoolClient } from 'pg';
 import { Category } from './entities/Category';
 import { Product } from './entities/Product';
 
@@ -6,4 +7,5 @@ export interface IContext {
     products: Product[];
     categories: Category[];
   };
+  dbClient: PoolClient;
 }

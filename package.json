@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec \"npx ts-node\" ./src/index.ts"
+    "start": "nodemon --exec \"npx ts-node\" ./src/index.ts",
+    "simple-migration": "ts-node src/db/migration.ts"
   },
   "keywords": [],
   "author": "",
@@ -15,10 +16,12 @@
     "class-validator": "^0.13.2",
     "express": "^4.17.3",
     "graphql": "^15.5.0",
+    "pg": "^8.7.3",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^1.1.1"
   },
   "devDependencies": {
+    "@types/pg": "^8.6.4",
     "nodemon": "^2.0.15",
     "ts-node": "^10.6.0",
     "typescript": "^4.6.2"

@@ -5,7 +5,7 @@ import { Category } from './Category';
 @ObjectType()
 export class Product {
   @Field(() => ID)
-  id: string;
+  id: number;
 
   @Field()
   title: string;
@@ -17,7 +17,7 @@ export class Product {
   price: number;
 
   @Field(() => Category, { nullable: true })
-  category: string;
+  category: number;
 }
 
 @InputType()
@@ -35,5 +35,5 @@ export class CreateProductInput {
   price: number;
 
   @Field()
-  category: string;
+  category: number;
 }
