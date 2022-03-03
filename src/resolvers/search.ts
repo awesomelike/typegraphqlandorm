@@ -1,28 +1,19 @@
-import { Context } from 'apollo-server-core';
-import { Resolver, Query, Arg, Ctx } from 'type-graphql';
+import { Resolver, Query, Arg } from 'type-graphql';
+import { Category, Product } from '../entities';
 import { SearchResult } from '../entities/SearchResult';
-import { IContext } from '../types';
+import { ILike } from 'typeorm';
 
 @Resolver()
 export class SearchResolver {
   @Query(() => [SearchResult])
   async search(
-    @Arg('string') string: string,
-    @Ctx() ctx: Context<IContext>
+    @Arg('string') string: string
   ): Promise<Array<typeof SearchResult>> {
     const lower = `%${string.toLowerCase()}%`;
-    const productsResult = await ctx.dbClient.query(
-      `SELECT * FROM products WHERE title ILIKE $1 OR description ILIKE $1`,
-      [lower]
-    );
-
-    const categoriesResult = await ctx.dbClient.query(
-      `SELECT * FROM categories WHERE name ILIKE $1`,
-      [lower]
-    );
-
-    const products = productsResult?.rows || [];
-    const categories = categoriesResult?.rows || [];
+    const products = await Product.find({
+      where: [{ title: ILike(lower) }, { description: ILike(lower) }],
+    });
+    const categories = await Category.find({ name: ILike(lower) });
 
     return [...products, ...categories];
   }
